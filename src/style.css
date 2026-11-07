@@ -29,6 +29,6 @@ h1{font-family:'Jua','Noto Sans KR','Malgun Gothic',sans-serif;font-weight:400;l
 @media(prefers-reduced-motion:reduce){.ripple,.spark{animation-duration:.2s}.start-button{transition:none}}
 @media (max-width: 600px) and (orientation: portrait) {
     .scene-stage {
-        left: calc(50% + 120px);
+        left: calc(50% + 80px);
     }
 }
