@@ -1,7 +1,11 @@
 :root{font-family:'Noto Sans KR',system-ui,-apple-system,'Malgun Gothic',sans-serif;color:#fff; background:#291b30;}
 *{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}button{font:inherit}button:focus-visible{outline:3px solid #fff;outline-offset:5px}
 .game{width:100%;height:100%;height:100dvh;position:relative;overflow:hidden;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
-.backdrop{position:absolute;inset:-1px;background-image:url('/assets/background.webp');background-size:cover;background-position:center center;background-repeat:no-repeat;z-index:0;pointer-events:none}
+/* Preserve the desktop scene. On portrait mobile, a centered virtual 16:9
+   stage keeps the model and the background composition in sync; only the
+   visible center portion is shown. The background retains its own aspect. */
+.scene-stage{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);isolation:isolate;overflow:hidden}
+.backdrop{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0;pointer-events:none}
 .background-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 48%,rgba(28,12,24,.19) 100%)}
 .live2d-host{position:absolute;inset:0;z-index:2;touch-action:none;cursor:default;overflow:hidden}
 .live2d-host canvas{width:100%;height:100%;display:block;touch-action:none}

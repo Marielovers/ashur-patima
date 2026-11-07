@@ -8,6 +8,8 @@ const OFFICIAL_CORE = 'https://cubism.live2d.com/sdk-web/core/06/live2dcubismcor
 const $ = (id) => document.getElementById(id);
 const game = $('game');
 const host = $('live2dHost');
+const sceneStage = $('sceneStage');
+const backdrop = $('sceneBackdrop');
 const startScreen = $('startScreen');
 const startButton = $('startButton');
 const loadingMessage = $('loadingMessage');
@@ -15,7 +17,7 @@ const errorMessage = $('errorMessage');
 const rippleLayer = $('rippleLayer');
 const path = (name) => new URL(name, new URL(import.meta.env.BASE_URL, document.baseURI)).href;
 // User-supplied left/right slap sounds play immediately, and the original
-// voice starts 1 second after the same click. All sounds use 50% gain.
+// voice starts 0.5 seconds after the same click. All sounds use 50% gain.
 const SOUND_FILES = {
   Left: 'assets/left.wav',
   Right: 'assets/right.wav',
@@ -30,6 +32,26 @@ let audioReady = false;
 let model = null;
 let started = false;
 const downPointers = new Map();
+
+// Keep the existing PC composition unchanged. On portrait screens, lay out
+// background and Live2D together on a virtual 16:9 PC stage, then show its
+// centered portion. This keeps the character centered instead of shrinking
+// relative to the background or drifting to one side on phones.
+const PC_SCENE_ASPECT = 16 / 9;
+function layoutScene() {
+  const viewWidth = game.clientWidth;
+  const viewHeight = game.clientHeight;
+  if (!viewWidth || !viewHeight) return;
+  const portrait = viewHeight > viewWidth;
+  const sceneWidth = portrait ? Math.max(viewWidth, viewHeight * PC_SCENE_ASPECT) : viewWidth;
+  sceneStage.style.width = `${Math.ceil(sceneWidth)}px`;
+  sceneStage.style.height = `${Math.ceil(viewHeight)}px`;
+}
+backdrop.style.backgroundImage = `url("${path('assets/background.webp')}")`;
+layoutScene();
+window.addEventListener('resize', layoutScene);
+window.addEventListener('orientationchange', layoutScene);
+window.visualViewport?.addEventListener('resize', layoutScene);
 
 async function getCoreUrl() {
   const local = path('vendor/live2dcubismcore.min.js');
@@ -54,7 +76,7 @@ async function preloadAudioFiles() {
 }
 
 // Create/resume Web Audio directly inside the Start button's trusted click
-// so that the sound scheduled one second later is allowed on mobile as well.
+// so that delayed voice playback is allowed on mobile as well.
 async function prepareAudioOnStart() {
   const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextConstructor) throw new Error('브라우저가 Web Audio를 지원하지 않습니다.');
@@ -91,8 +113,18 @@ function playSound(key, delaySeconds = 0) {
 }
 
 async function loadGame() {
+  // A blocked Core script or fetch can leave a blank loading UI without a thrown error.
+  // Show guidance if it is taking longer than expected, without cancelling a slow load.
+  const slowLoadNotice = setTimeout(() => {
+    if (model || started) return;
+    loadingMessage.textContent = '모델 로딩이 지연되고 있어요';
+    errorMessage.hidden = false;
+    errorMessage.textContent = 'Live2D Core 또는 모델 리소스가 차단되었을 수 있습니다.\n인터넷 연결을 확인하고 F12 → Console / Network에서 실패한 파일을 확인해 주세요.';
+  }, 15000);
   try {
+    loadingMessage.textContent = '음성과 모델 리소스를 확인하는 중…';
     const [coreUrl] = await Promise.all([getCoreUrl(), preloadAudioFiles()]);
+    loadingMessage.textContent = 'Live2D 엔진과 모델을 불러오는 중…';
     model = await createLive2D({
       container: host,
       src: path('model/character.model3.json'),
@@ -106,13 +138,18 @@ async function loadGame() {
       throw new Error('Left / Right 히트 에어리어가 모델에서 발견되지 않았습니다.');
     }
     loadingMessage.textContent = '준비 완료!';
+    errorMessage.hidden = true;
     startButton.disabled = false;
   } catch (error) {
     console.error('[에슈르 빵댕이 때리기] 모델 로드 오류', error);
     loadingMessage.textContent = '모델을 불러오지 못했어요';
     errorMessage.hidden = false;
-    errorMessage.textContent = `${error?.message || String(error)}\n브라우저의 WebGL2 지원과 인터넷 연결을 확인해 주세요.`;
+    const detailText = error?.details?.url ? `\n문제 파일: ${error.details.url}` : '';
+    const errorCode = error?.code ? ` (${error.code})` : '';
+    errorMessage.textContent = `${error?.message || String(error)}${errorCode}${detailText}\n브라우저의 WebGL2 지원과 인터넷 연결을 확인해 주세요.`;
     startButton.disabled = true;
+  } finally {
+    clearTimeout(slowLoadNotice);
   }
 }
 
@@ -174,12 +211,12 @@ function detectSide(event) {
 
 function playClickVoice(side) {
   // New hit cancels the previous click's playback, including the voice
-  // that would otherwise start after one second.
+  // that would otherwise start after 0.5 seconds.
   stopPreviousAudio();
   // 0 seconds: play the slap sound for the matching hit area.
   playSound(side, 0);
-  // 1.0 seconds after each click: original provided voice.
-  playSound('Delayed', 1);
+  // 0.5 seconds after each click: original provided voice.
+  playSound('Delayed', 0.5);
 }
 
 function onHit(event) {
