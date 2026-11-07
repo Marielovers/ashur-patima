@@ -1,0 +1,25 @@
+:root{font-family:'Noto Sans KR',system-ui,-apple-system,'Malgun Gothic',sans-serif;color:#fff; background:#291b30;}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}button{font:inherit}button:focus-visible{outline:3px solid #fff;outline-offset:5px}
+.game{width:100%;height:100%;height:100dvh;position:relative;overflow:hidden;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
+.backdrop{position:absolute;inset:-1px;background-image:url('/assets/background.webp');background-size:cover;background-position:center center;background-repeat:no-repeat;z-index:0;pointer-events:none}
+.background-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 48%,rgba(28,12,24,.19) 100%)}
+.live2d-host{position:absolute;inset:0;z-index:2;touch-action:none;cursor:default;overflow:hidden}
+.live2d-host canvas{width:100%;height:100%;display:block;touch-action:none}
+.ripple-layer{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.start-screen{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}
+.start-screen[hidden]{display:none}
+.start-screen-shade{position:absolute;inset:0;background:linear-gradient(150deg,rgba(32,15,44,.58),rgba(65,25,59,.33) 50%,rgba(13,9,27,.62));backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.start-card{position:relative;width:min(520px,100%);padding:clamp(34px,5.5vw,64px) clamp(22px,5vw,48px) clamp(32px,5vw,48px);display:flex;align-items:center;flex-direction:column;text-align:center;background:linear-gradient(155deg,rgba(58,24,49,.80),rgba(23,13,37,.83));border:1.5px solid rgba(255,213,235,.36);box-shadow:0 30px 110px #0d082b66,0 0 0 7px #ffffff0a inset;border-radius:30px}
+.start-ornament{color:#ffd9e8;font-size:18px;letter-spacing:.7em;padding-left:.7em;margin-bottom:20px;text-shadow:0 0 18px #ff95cc}
+h1{font-family:'Jua','Noto Sans KR','Malgun Gothic',sans-serif;font-weight:400;line-height:1.12;font-size:clamp(43px,7.2vw,74px);letter-spacing:-.035em;margin:0;color:#fff5fd;text-shadow:0 5px 14px #290b34,0 0 36px #ff96ca66;word-break:keep-all}h1 span{color:#ffd1e6}
+.loading-message{font-size:13px;margin:22px 0 18px;color:#ffe9f4;min-height:20px}
+.start-button{min-width:min(270px,100%);padding:17px 28px;border-radius:999px;border:2px solid #fff4fb;background:linear-gradient(120deg,#f99dc0,#f5b7cf 50%,#ffd4e4);color:#702946;font-family:'Jua','Noto Sans KR',sans-serif;font-size:23px;box-shadow:0 10px 0 #ad557d,0 18px 30px #0005;cursor:pointer;transition:transform .18s,box-shadow .18s,filter .18s}
+.start-button span{margin-left:6px}.start-button:hover:not(:disabled){transform:translateY(-3px);filter:brightness(1.05);box-shadow:0 13px 0 #ad557d,0 22px 30px #0006}.start-button:active:not(:disabled){transform:translateY(5px);box-shadow:0 4px 0 #ad557d,0 8px 16px #0006}.start-button:disabled{opacity:.60;cursor:wait}
+.error-message{font-size:12px;line-height:1.6;color:#ffd7d7;white-space:pre-line;max-width:100%;overflow-wrap:anywhere;margin:20px 0 0}
+.ripple{position:absolute;left:0;top:0;width:22px;height:22px;transform:translate(-50%,-50%) scale(.25);border:2.5px solid #fff9fd;box-shadow:0 0 12px #ffd3ed,0 0 20px #ff91bf,inset 0 0 9px #ffa5cf;border-radius:50%;animation:ring-pop .57s ease-out forwards}
+.ripple::before{content:'';position:absolute;inset:4px;border:1px solid #ffe0f2;border-radius:50%;opacity:.8}
+@keyframes ring-pop{0%{opacity:1;transform:translate(-50%,-50%) scale(.22)}55%{opacity:.85}100%{opacity:0;transform:translate(-50%,-50%) scale(3.5)}}
+.spark{position:absolute;left:0;top:0;width:5px;height:5px;background:#fff3fa;border-radius:50%;box-shadow:0 0 9px #ffaad2;animation:spark-pop .5s ease-out forwards}
+@keyframes spark-pop{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2)}}
+@media(max-width:600px){.backdrop{background-position:center center}.start-card{border-radius:24px}.start-ornament{font-size:14px;letter-spacing:.5em}.start-button{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.ripple,.spark{animation-duration:.2s}.start-button{transition:none}}

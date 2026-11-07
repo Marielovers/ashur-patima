@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#291b30" />
+  <meta name="description" content="에슈르 빵댕이 때리기 — 좌우 클릭 반응 Live2D 미니게임" />
+  <title>에슈르 빵댕이 때리기</title>
+</head>
+<body>
+  <main id="game" class="game" aria-label="에슈르 빵댕이 때리기">
+    <div class="backdrop" aria-hidden="true"></div>
+    <div class="background-vignette" aria-hidden="true"></div>
+    <div id="live2dHost" class="live2d-host" aria-label="에슈르 캐릭터. 왼쪽과 오른쪽 히트 영역을 터치해보세요"></div>
+    <div id="rippleLayer" class="ripple-layer" aria-hidden="true"></div>
+
+    <section id="startScreen" class="start-screen" aria-labelledby="gameTitle">
+      <div class="start-screen-shade" aria-hidden="true"></div>
+      <div class="start-card">
+        <div class="start-ornament" aria-hidden="true">✦ &nbsp; ✧ &nbsp; ✦</div>
+        <h1 id="gameTitle">에슈르<br /><span>빵댕이 때리기</span></h1>
+        <p id="loadingMessage" class="loading-message" aria-live="polite">모델을 불러오는 중…</p>
+        <button id="startButton" class="start-button" type="button" disabled>시작하기 <span aria-hidden="true">♡</span></button>
+        <p id="errorMessage" class="error-message" role="alert" hidden></p>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

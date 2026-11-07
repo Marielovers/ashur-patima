@@ -1,0 +1,49 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "character.moc3",
+    "Textures": [
+      "texture/texture_00.png"
+    ],
+    "Physics": "character.physics3.json",
+    "DisplayInfo": "character.cdi3.json",
+    "Motions": {
+      "Left": [
+        {
+          "File": "left.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.35
+        }
+      ],
+      "Right": [
+        {
+          "File": "right.motion3.json",
+          "FadeInTime": 0.18,
+          "FadeOutTime": 0.35
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": []
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": []
+    }
+  ],
+  "HitAreas": [
+    {
+      "Id": "HitAreaLeft",
+      "Name": "Left"
+    },
+    {
+      "Id": "HitAreaRight",
+      "Name": "Right"
+    }
+  ]
+}
